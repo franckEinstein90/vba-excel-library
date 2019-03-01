@@ -1,0 +1,17 @@
+Public Sub makePivotTable()
+    Dim sh As Worksheet
+    Dim v As Range
+    Dim objPT As PivotTable
+    Dim objPC As PivotCache
+    Set sh = ActiveSheet
+     
+    Set v = sh.[A1].CurrentRegion ' Assumes data range starts at cell A1
+   
+    sh.ListObjects.Add(SourceType:=xlSrcRange, Source:=v, _
+        xlListObjectHasHeaders:=xlYes, tablestyleName:="TableStyleMedium28").Name = "Sales_Table"
+    
+    Set objPC = ActiveWorkbook.PivotCaches.Create(xlDatabase, "Sales_Table")
+    Set objPT = objPC.CreatePivotTable(Worksheets("sheet8").Range("a3"), TableName:="Sales Pivot")
+    objPT.AddFields RowFields:="Salesperson", ColumnFields:="Region"
+    objPT.AddDataField objPT.PivotFields("Sales"), "Total Sales", xlSum
+End Sub
